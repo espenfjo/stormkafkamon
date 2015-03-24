@@ -26,19 +26,18 @@ def display(summary, friendly=False):
         fmt = null_fmt
 
     table = PrettyTable(['Broker', 'Topic', 'Partition', 'Earliest', 'Latest',
-                        'Depth', 'Spout', 'Current', 'Delta'])
+                         'Depth', 'Spout', 'Current', 'Offset lag', 'Delta'])
     table.align['broker'] = 'l'
 
     for p in summary.partitions:
         table.add_row([p.broker, p.topic, p.partition, p.earliest, p.latest,
-                      fmt(p.depth), p.spout, p.current, fmt(p.delta)])
+                       fmt(p.depth), p.spout, p.current, p.latest - p.current, fmt(p.delta)])
     print table.get_string(sortby='Broker')
     print
     print 'Number of brokers:       %d' % summary.num_brokers
     print 'Number of partitions:    %d' % summary.num_partitions
     print 'Total broker depth:      %s' % fmt(summary.total_depth)
     print 'Total delta:             %s' % fmt(summary.total_delta)
-    print 'Remaining in %s :        %s' % (p.topic, (p.latest - p.current))
 
 def post_json(endpoint, zk_data):
     fields = ("broker", "topic", "partition", "earliest", "latest", "depth",
