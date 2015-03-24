@@ -73,6 +73,8 @@ class ZkClient:
             for c in self.client.get_children(spout_root):
                 partitions = []
                 for p in self.client.get_children(self._zjoin([spout_root, c])):
+                    if not self.client.get(self._zjoin([spout_root, c, p]))[0]:
+                        continue
                     j = json.loads(self.client.get(self._zjoin([spout_root, c, p]))[0])
                     if j['topology']['name'] == topology:
                         partitions.append(j)
